@@ -1,0 +1,39 @@
+{
+  "name": "component-table-matrix",
+  "version": "0.0.1",
+  "description": "Table to display matrix",
+  "main": "src/main.js",
+  "scripts": {
+    "build": "watchify test/**/*.js -t brfs --debug -o bundle.js",
+    "watch": "browser-sync start --server --no-open --port 6016 --no-ui --files 'index.html,bundle.js'",
+    "test": "npm run build & npm run watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/epha/component-table-matrix.git"
+  },
+  "author": {
+    "email": "marco.egbring@epha.ch"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/epha/component-table-matrix/issues"
+  },
+  "homepage": "https://github.com/epha/component-table-matrix#readme",
+  "browserify": {
+    "transform": [
+      "brfs"
+    ]
+  },
+  "dependencies": {
+    "component-factory": "github:epha/component-factory",
+    "domify": "^1.4.0",
+    "insert-css": "^0.2.0"
+  },
+  "devDependencies": {
+    "asset-css": "github:epha/asset-css",
+    "brfs": "github:substack/brfs",
+    "font-awesome": "github:fortawesome/font-awesome",
+    "webcomponents-lite": "^0.6.0"
+  }
+}
