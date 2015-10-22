@@ -28,12 +28,12 @@ matrix.attachedCallback = function() {
 
     if (element.classList.contains("active")){
       element.classList.remove("active");
-      this.emit("unselect", element, element.getData());
+      this.emit("unselect", element, element.data);
 
     } else {
       if (!!active) active.classList.remove("active");
       element.classList.add("active");
-      this.emit("select", element, element.getData());
+      this.emit("select", element, element.data);
     }
   });
 
@@ -87,9 +87,8 @@ matrix.set = function( rows ){
       if ( point ) {
         var cell = document.createElement("td");
         
-        cell.getData = function() {
-          return point;
-        };
+        cell.data = JSON.parse(JSON.stringify(point));
+        
         // DATA KEYS
         for ( var key in point ) {
           if (point[key] != null){

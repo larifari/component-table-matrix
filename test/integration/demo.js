@@ -24,5 +24,5 @@ matrix.set([
 ]);
 
 matrix.on("select", function(element,data) {
-  console.log(data);
+  console.log(element,data);
 });
