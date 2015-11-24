@@ -13,8 +13,8 @@ matrix.createdCallback = function(){
   this.appendChild( domify(html) );
 
   this.table = this.querySelector("table");
-  this.height = this.getAttribute("height");
-  this.width = this.getAttribute("width");
+  this.height = this.getAttribute("height") || "50";
+  this.width = this.getAttribute("width") || "50";
   
 };
 
@@ -41,6 +41,7 @@ matrix.attachedCallback = function() {
 
 matrix.detachedCallback = function() {
   this.untouchable();
+  this.off("touch");
 }
 
 matrix.select = function(el) {
@@ -76,9 +77,7 @@ matrix.set = function( rows ){
 
     var row = document.createElement("tr");
     
-    if( this.height ) {
-      row.style.height = this.height+"px";
-    }
+    row.style.height = this.height+"px";
 
     for ( var c = 0; c < rows[r].length; c++ ) {
 
@@ -95,9 +94,8 @@ matrix.set = function( rows ){
             cell.setAttribute("data-" + key, point[key]);
           }
         }
-        if (!!this.width){
-            cell.style.width = this.width+"px";
-        }
+
+        cell.style.width = this.width+"px";
         
         row.appendChild(cell);
       }

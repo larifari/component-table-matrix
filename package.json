@@ -4,8 +4,8 @@
   "description": "Table to display matrix",
   "main": "src/main.js",
   "scripts": {
-    "build": "watchify test/**/*.js -t brfs --debug -o bundle.js",
-    "watch": "browser-sync start --server --no-open --port 6016 --no-ui --files 'index.html,bundle.js'",
+    "build": "watchify test/**/*.js -t brfs --debug -o test/bundle.js",
+    "watch": "browser-sync start --server --no-open --port 6016 --no-ui --files 'test/index.html,test/bundle.js'",
     "test": "npm run build & npm run watch"
   },
   "repository": {
