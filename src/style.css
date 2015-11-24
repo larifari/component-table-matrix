@@ -117,16 +117,17 @@ table-matrix [data-grad][data-text]:before {
 }
 
 [data-grad]:before {
+  font-size:1.2rem;
+  color: #333;
   content: attr(data-grad);
 }
 
 [data-grad="?"]:before {
   font-family: FontAwesome;
-  font-size: 2rem;
-  content: "\f254"; /* hourglass */
-  content: "\f129"; /* (i) */
-  content: "\f06a"; /* i */
-  content: "\f05e"; /* (/) */
+  font-size: 1.8rem;
+  content: "\2028"; /* leer - nicht relevant für Patient*/
+  content: "\f254"; /* hourglass - in Bearbeitung*/
+  content: "\f05a"; /* (i) - */
   color:#696969;
 }
 
