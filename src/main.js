@@ -80,26 +80,21 @@ matrix.set = function( rows ){
     row.style.height = this.height+"px";
 
     for ( var c = 0; c < rows[r].length; c++ ) {
-
-      var point = rows[r][c];
-
-      if ( point ) {
-        var cell = document.createElement("td");
+      var item = rows[r][c];
+      var cell = document.createElement("td");
         
-        cell.data = JSON.parse(JSON.stringify(point));
-        
-        // DATA KEYS
-        for ( var key in point ) {
-          if (point[key] != null){
-            cell.setAttribute("data-" + key, point[key]);
-          }
-        }
+      cell.data = item.data ? JSON.parse(JSON.stringify(item.data)) : null;
 
-        cell.style.width = this.width+"px";
-        
-        row.appendChild(cell);
-      }
+      if( item.type ) cell.setAttribute("data-type", item.type);
+      if( item.grad ) cell.setAttribute("data-grad", item.grad);
+      if( item.text ) cell.setAttribute("data-text", item.text);
+      if( item.icon ) cell.setAttribute("data-icon", item.icon);
+
+      cell.style.width = this.width+"px";
+
+      row.appendChild(cell);
     }
+    
     content.appendChild(row);
 
   };

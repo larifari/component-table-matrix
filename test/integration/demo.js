@@ -9,40 +9,59 @@ document.title = "Table-Matrix";
 var matrix = document.querySelector("table-matrix"); 
 
 matrix.set([
+  
   // First row
   [
-    { atc:"J01CR02", grad:"A" },
-    { atc:"J01CR02", grad:"B" },
-    { atc:"J01CR02", grad:"C" },
-    { atc:"J01CR02", grad:"D" },
-    { atc:"J01CR02", grad:"X" },
-    { atc:"J01CR02", grad:"?" },
-    { atc:"J01CR02", grad:"O" },
-  ],
-  [ 
-    { alternatives:88 },
-    { alternatives:7 },
-    { alternatives:6 },
-    { alternatives:5 },
-    { alternatives:4 },
-    { alternatives:4 },
-    { alternatives:4 }
-  ],
-  [ 
-    { atc1:"J02R23", grad:"A" },
-    { atc1:"J02R23", grad:"B" },
-    { atc1:"J02R23", grad:"C" },
-    { atc1:"J02R23", grad:"D" },
-    { atc1:"J02R23", grad:"X" }
+    { "type":"expert", "icon":"indikation", data:"hallo" },
+    { "type":"expert", "icon":"kontra" },
+    { "type":"expert", "icon":"dosing" },
+    { "type":"expert", "icon":"niere" },
+    { "type":"expert", "icon":"matrix-selbst" },
+    { "type":"expert", "icon":"matrix-fremd" },
+    { "type":"expert", "icon":"qt" },
+    { "type":"expert", "icon":"schwangerschaft" },
+    { "type":"expert", "icon":"alter" }
   ],
   [
-    { atc:"J01CR02", grad:"C", text:"CCC" },
-    { grad:"\f06a" }
+    { "type":"box", grad:"A" },
+    { "type":"box", grad:"B" },
+    { "type":"box", grad:"C" },
+    { "type":"box", grad:"D" },
+    { "type":"box", grad:"X" },
+    // should not show anything
+    { "type":"box", grad:"Z" }, 
+    // noch nicht bearbeitet  
+    { "type":"box", grad:"?", icon:"" }, 
+    // Unzutreffend Schwanger Mann
+    { "type":"box", grad:"U", icon:"" }, 
+    // fehlende Angaben des Patienten 
+    { "type":"box", grad:"!", icon:"" }, 
+    // ohne Klassifikation aber bearbeitet
+    { "type":"box", grad:"O", icon:"" }, 
+  ],
+  [ 
+    { "type":"expand", "icon":"open",  text:"88" },
+    { "type":"expand", "icon":"open",  text:"8" },
+    { "type":"expand", "icon":"close", text:"88" }
+  ],
+  [ 
+    { "type":"left", grad:"A" },
+    { "type":"left", grad:"B" },
+    { "type":"left", grad:"C" },
+    { "type":"left", grad:"D" },
+    { "type":"left", grad:"X" },
+    // should not show any label
+    { "type":"left", grad:"Z" }
+  ],
+  [
+    { "type":"line", grad:"B", text:"BBB" },
+    { "type":"line", grad:"A", text:"AAA" },
+    { "type":"line", grad:"Z", text:"AAA" }
   ]
 ]);
 
 matrix.on("select", function(element,data) {
-  if(data.alternatives) {
-    element.classList.toggle("close");
+  if(element.hasAttribute("data-type")) {
+    console.log( element.getAttribute("data-type"),data );
   }
 });
