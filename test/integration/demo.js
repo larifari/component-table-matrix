@@ -31,13 +31,13 @@ matrix.set([
     // should not show anything
     { "type":"box", grad:"Z" }, 
     // noch nicht bearbeitet  
-    { "type":"box", grad:"?", icon:"" }, 
+    { "type":"box", grad:"?", icon:"true" }, 
     // Unzutreffend Schwanger Mann
-    { "type":"box", grad:"U", icon:"" }, 
+    { "type":"box", grad:"U", icon:"true" }, 
     // fehlende Angaben des Patienten 
-    { "type":"box", grad:"!", icon:"" }, 
+    { "type":"box", grad:"!", icon:"true" }, 
     // ohne Klassifikation aber bearbeitet
-    { "type":"box", grad:"O", icon:"" }, 
+    { "type":"box", grad:"O", icon:"true" }, 
   ],
   [ 
     { "type":"expand", "icon":"open",  text:"88" },
