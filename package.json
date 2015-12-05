@@ -1,6 +1,6 @@
 {
   "name": "component-table-matrix",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Table to display matrix",
   "main": "src/main.js",
   "scripts": {
