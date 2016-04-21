@@ -21,7 +21,7 @@ table-matrix td.active {
 table-matrix td svg {
   height:40px;
   width:40px;
-  fill:#bbb;
+  fill:#555;
 }
 
 table-matrix td[data-text]:after {
@@ -43,10 +43,6 @@ table-matrix td[data-sup]:after {
   font-size:0.8rem;
   margin-top: -0.2rem;
   content:attr(data-sup);
-}
-
-table-matrix [data-color="black"] svg {
-  fill: #555;
 }
 
 table-matrix [data-color="grey"] svg {
