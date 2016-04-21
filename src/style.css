@@ -2,16 +2,6 @@ table-matrix {
   display: block;
 }
 
-table-matrix[hidden] {
-  display: none;
-}
-
-table-matrix * {
-  box-sizing: border-box;
-  padding: 0;
-  margin:0;
-}
-
 table-matrix table {
   border-collapse: separate;
   border-spacing: 0;
@@ -22,236 +12,67 @@ table-matrix table {
   vertical-align: middle;
 }
 
-/* TYPE SELECTED CELL*/
-table-matrix .active {
-  box-shadow: inset 0 0 0px 4px #429fdf;
+table-matrix td.active {
+  box-shadow: inset 0 0 0px 4px #4778cc;
   /*outline: 3px solid #fff; #429fdf; */
   border-radius: 3px;
 }
 
-
-/* TYPE EXPERT */
-table-matrix [data-type="expert"]:before {
-  font-family: FontAwesome;
-  font-size:1.8rem;
-  color: #555;
-}
-table-matrix [data-type="expert"][data-icon="indikation"]:before { 
-  /* fa-check-square-o */
-  content: "\f046";
-}
-table-matrix [data-type="expert"][data-icon="kontra"]:before { 
-  /* fa-minus-circle */
-  content: "\f056";
-}
-table-matrix [data-type="expert"][data-icon="dosing"]:before { 
-  /* fa-minus-circle */
-  content: "\f201";
-}
-table-matrix [data-type="expert"][data-icon="niere"]:before { 
-  /* fa-balance-scale */
-  content: "\f24e";
-}
-table-matrix [data-type="expert"][data-icon="matrix-selbst"]:before { 
-  /* fa-outdent */
-  content: "\f03b"; 
-}
-table-matrix [data-type="expert"][data-icon="matrix-fremd"]:before {
-  /* fa-indent */
-  content: "\f03c"; 
-}
-table-matrix [data-type="expert"][data-icon="qt"]:before { 
-  /* fa-heartbeat */
-  content: "\f21e"; 
-}
-table-matrix [data-type="expert"][data-icon="schwangerschaft"]:before { 
-  /* fa-female */
-  content: "\f182";
-}
-table-matrix [data-type="expert"][data-icon="alter"]:before { 
-  /* fa-diamond */
-  content: "\f219"; 
+table-matrix td svg {
+  height:40px;
+  width:40px;
+  fill:#bbb;
 }
 
-
-/* TYPE EXPAND */
-table-matrix [data-type="expand"]:before {
-  font-family: FontAwesome;
-  font-size:1.8rem;
-  color: #555;
-  content: "\2028";
-}
-table-matrix [data-type="expand"][data-icon="open"]:before { 
-  /* fa-angle-double-right */
-  content: "\f101";
-}
-table-matrix [data-type="expand"][data-icon="open"][data-text]:after { 
-  vertical-align: top;
-  content: attr(data-text);
-}
-table-matrix [data-type="expand"][data-icon="open"][data-text="0"]:after { 
-  cursor: default;
-  content: "";
-}
-table-matrix [data-type="expand"][data-icon="close"]:before { 
-/* fa-angle-double-left */
-  content: "\f100";
-}
-
-
-/* TYPE BOX */
-table-matrix [data-type="box"]:before {
-  box-sizing: border-box;
-  border-radius: 5px;
-  display: inline-block;
-  height: 80%;
-  line-height: 50px;
-  width: 80%;
-  margin-top: 0;
-  margin-left: 0;
-  background: rgb(185,185,185);
-  content: "\2028";
-  font-size:1.4rem;
-}
-/* Standard */
-table-matrix [data-type="box"][data-grad="A"]:before {
-  content:attr(data-grad);
-  background: rgb(158, 226, 115);
-}
-table-matrix [data-type="box"][data-grad="B"]:before {
-  content:attr(data-grad);
-  background: rgb(229, 230, 127);
-}
-table-matrix [data-type="box"][data-grad="C"]:before {
-  content:attr(data-grad);
-  background: rgb(235, 200, 140);
-}
-table-matrix [data-type="box"][data-grad="D"]:before {
-  content:attr(data-grad);
-  background: rgb(240, 164, 127);
-}
-table-matrix [data-type="box"][data-grad="X"]:before {
-  content:attr(data-grad);
-  background: rgb(240, 138, 136);
-}
-table-matrix [data-type="box"][data-icon]:before {
-  font-family: FontAwesome;
-  color:#777;
-  font-size:1.5rem;
-}
-/* fa-hourglass - in Bearbeitung */
-table-matrix [data-type="box"][data-icon][data-grad="?"]:before {
-  content: "\f250"; 
-}
-/* fa-pause - nicht relevant für Patient */
-table-matrix [data-type="box"][data-icon][data-grad="U"]:before {
-  content: "\f04C"; 
-}
-/* fa-exclamation - fehlende Angaben */
-table-matrix [data-type="box"][data-icon][data-grad="!"]:before {
-  content: "\f12A"; 
-  color: rgb(178, 34, 34);
-}
-/* fa-information - ohne Klassifikation */
-table-matrix [data-type="box"][data-icon][data-grad="O"]:before {
-  content: "\f129"; 
-  color: #1490bc;
-}
-
-table-matrix [data-type="line"]:before {
-  color: #555;
-  content: attr(data-text);
-  background: transparent;
-  font-size:1.2rem;
-  border-bottom-width: 3px;
-  border-radius: 0 !important;
-  border-bottom-style: solid;
-  border-color: rgb(185,185,185);
-}
-table-matrix [data-type="line"][data-grad="A"]:before {
-  border-color: rgb(158, 226, 115);
-}
-table-matrix [data-type="line"][data-grad="B"]:before {
-  border-color: rgb(229, 230, 127);
-}
-table-matrix [data-type="line"][data-grad="C"]:before {
-  border-color: rgb(235, 200, 140); 
-}
-table-matrix [data-type="line"][data-grad="D"]:before {
-  border-color: rgb(240, 164, 127); 
-}
-table-matrix [data-type="line"][data-grad="X"]:before {
-  border-color: rgb(240, 138, 136);
-}
-
-
-/* LEFT ARROW */
-table-matrix [data-type="left"]:before {
-  content:attr(data-grad);
-  box-sizing: border-box;
-  border-radius: 5px;
-  font-size:1.2rem;
-  display: inline-block;
+table-matrix td[data-text]:after {
   position:absolute;
-  height: 34px;
-  line-height: 34px;
-  width: 30px;
-  padding-right: 8px;
-  margin-top: 0;
-  margin-left: 0px;
+  padding:0;
+  font-size:1.1rem;
+  margin-left: -40px;
+  height: 40px;
+  line-height:40px;
+  width:40px;
+  text-align: center;
+  content:attr(data-text);
 }
 
-/* LEFT ARROW - ARROW */
-table-matrix [data-type="left"]:after {
-  border-top: solid transparent;
-  border-left: solid transparent;
-  border-bottom: solid transparent;
-  border-right-style: solid;
-  border-width: 16px;
-  content: "";
-  display: inline-block;
-  height: 0;
-  width: 0;
-  top: 0;
-  left:-16px;
-  margin-top: 1px;
-  position: relative;
-  margin-left: -14px;
+table-matrix td[data-sup]:after {
+  position:absolute;
+  padding:0;
+  margin-left:-0.8rem;
+  font-size:0.8rem;
+  margin-top: -0.2rem;
+  content:attr(data-sup);
 }
 
-table-matrix [data-type="left"][data-grad]:before {
-  background: rgb(185, 185, 185);
+table-matrix [data-color="black"] svg {
+  fill: #555;
 }
-table-matrix [data-type="left"][data-grad]:after {
-  border-right: 16px solid rgb(185, 185, 185);
+
+table-matrix [data-color="grey"] svg {
+  fill: #c8c8c8;
 }
-table-matrix [data-type="left"][data-grad="A"]:before {
-  background: rgb(158, 226, 115);
+
+table-matrix [data-color="green"] svg {
+  fill: rgb(158, 226, 115);
 }
-table-matrix [data-type="left"][data-grad="A"]:after {
-  border-right: 16px solid rgb(158, 226, 115);
+
+table-matrix [data-color="yellow"] svg {
+  fill: rgb(229, 230, 127);
 }
-table-matrix [data-type="left"][data-grad="B"]:before {
-  background: rgb(229, 230, 127);
+
+table-matrix [data-color="orange"] svg {
+  fill: rgb(235, 200, 140);
 }
-table-matrix [data-type="left"][data-grad="B"]:after {
-  border-right: 16px solid rgb(229, 230, 127);
+
+table-matrix [data-color="red"] svg {
+  fill: rgb(240, 164, 127);
 }
-table-matrix [data-type="left"][data-grad="C"]:before {
-  background: rgb(235, 200, 140);
+
+table-matrix [data-color="darkred"] svg {
+  fill: rgb(240, 138, 136);
 }
-table-matrix [data-type="left"][data-grad="C"]:after {
-  border-right: 16px solid rgb(235, 200, 140);
-}
-table-matrix [data-type="left"][data-grad="D"]:before {
-  background: rgb(240, 164, 127);
-}
-table-matrix [data-type="left"][data-grad="D"]:after {
-  border-right: 16px solid rgb(240, 164, 127);
-}
-table-matrix [data-type="left"][data-grad="X"]:before {
-  background: rgb(240, 138, 136);
-}
-table-matrix [data-type="left"][data-grad="X"]:after {
-  border-right: 16px solid rgb(240, 138, 136);
+
+table-matrix [data-color="blue"] svg {
+  fill: #4887cc;
 }

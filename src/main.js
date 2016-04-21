@@ -2,6 +2,7 @@ var factory = require("component-factory");
 var css = require("insert-css");
 var fs = require("fs");
 var domify = require("domify");
+var style = require("code-style");
 
 css( fs.readFileSync(__dirname + "/style.css", "utf-8"));
 
@@ -82,15 +83,15 @@ matrix.set = function( rows ){
     for ( var c = 0; c < rows[r].length; c++ ) {
       var item = rows[r][c];
       var cell = document.createElement("td");
+      cell.style.width = this.width+"px";
         
       cell.data = item.data ? JSON.parse(JSON.stringify(item.data)) : null;
 
-      if( item.type ) cell.setAttribute("data-type", item.type);
-      if( item.grad ) cell.setAttribute("data-grad", item.grad);
+      if( item.color ) cell.setAttribute("data-color", item.color);
       if( item.text ) cell.setAttribute("data-text", item.text);
-      if( item.icon ) cell.setAttribute("data-icon", item.icon);
+      if( item.sup ) cell.setAttribute("data-sup", item.sup);
 
-      cell.style.width = this.width+"px";
+      if( item.icon ) cell.appendChild( style.import("svg", item.icon ) );
 
       row.appendChild(cell);
     }

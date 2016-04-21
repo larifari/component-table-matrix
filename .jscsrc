@@ -1,0 +1,15 @@
+{
+    "excludeFiles": [
+        "node_modules/*",
+        "!node_modules/private",
+        "node_modules/private/node_modules/*"
+     ],
+     "disallowFunctionDeclarations": true,
+     "disallowMixedSpacesAndTabs": true,
+     "disallowMultipleLineBreaks": true,
+     "disallowTrailingComma": true,
+     "disallowTrailingWhitespace": true,
+     "requireLineFeedAtFileEnd": true,
+     "validateIndentation": 4
+}
+
