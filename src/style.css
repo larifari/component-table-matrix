@@ -54,7 +54,7 @@ table-matrix [data-color="grey"] svg {
   fill: #c8c8c8;
 }
 table-matrix [data-color="grey"].active svg {
-  fill: white;
+  fill: #FAFAFA;
 }
 
 table-matrix [data-color="green"] svg {
