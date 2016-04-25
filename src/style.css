@@ -29,8 +29,6 @@ table-matrix td[data-icon=wait] svg {
   width:36px;
 }
 
-
-
 table-matrix td[data-text]:after {
   position:absolute;
   padding:0;
@@ -54,6 +52,9 @@ table-matrix td[data-sup]:after {
 
 table-matrix [data-color="grey"] svg {
   fill: #c8c8c8;
+}
+table-matrix [data-color="grey"].active svg {
+  fill: white;
 }
 
 table-matrix [data-color="green"] svg {
