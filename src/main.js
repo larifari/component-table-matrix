@@ -91,7 +91,10 @@ matrix.set = function( rows ){
       if( item.text ) cell.setAttribute("data-text", item.text);
       if( item.sup ) cell.setAttribute("data-sup", item.sup);
 
-      if( item.icon ) cell.appendChild( style.import("svg", item.icon ) );
+      if( item.icon ) {
+        cell.setAttribute("data-icon", item.icon);
+        cell.appendChild( style.import("svg", item.icon ) );
+      }
 
       row.appendChild(cell);
     }

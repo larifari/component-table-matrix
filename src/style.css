@@ -22,6 +22,15 @@ table-matrix td svg {
   fill:#555;
 }
 
+table-matrix td[data-icon=pause] svg,
+table-matrix td[data-icon=notfound] svg,
+table-matrix td[data-icon=wait] svg {
+  height:36px;
+  width:36px;
+}
+
+
+
 table-matrix td[data-text]:after {
   position:absolute;
   padding:0;
