@@ -13,7 +13,7 @@ table-matrix table {
 }
 
 table-matrix td.active {
-  background:#DDD;
+  background:#bbb;
 }
 
 table-matrix td svg {
@@ -44,7 +44,7 @@ table-matrix td[data-sup]:after {
 }
 
 table-matrix [data-color="grey"] svg {
-  fill: #BBB;
+  fill: #c8c8c8;
 }
 
 table-matrix [data-color="green"] svg {
