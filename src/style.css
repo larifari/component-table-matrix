@@ -13,14 +13,12 @@ table-matrix table {
 }
 
 table-matrix td.active {
-  box-shadow: inset 0 0 0px 4px #4778cc;
-  /*outline: 3px solid #fff; #429fdf; */
-  border-radius: 3px;
+  background:#DDD;
 }
 
 table-matrix td svg {
-  height:40px;
-  width:40px;
+  height:44px;
+  width:44px;
   fill:#555;
 }
 
@@ -28,10 +26,10 @@ table-matrix td[data-text]:after {
   position:absolute;
   padding:0;
   font-size:1.1rem;
-  margin-left: -40px;
-  height: 40px;
-  line-height:40px;
-  width:40px;
+  margin-left: -44px;
+  height: 44px;
+  line-height:44px;
+  width:44px;
   text-align: center;
   content:attr(data-text);
 }
@@ -46,7 +44,7 @@ table-matrix td[data-sup]:after {
 }
 
 table-matrix [data-color="grey"] svg {
-  fill: #c8c8c8;
+  fill: #BBB;
 }
 
 table-matrix [data-color="green"] svg {
