@@ -56,8 +56,8 @@ matrix.select = function(el) {
   td.classList.add("active");
 };
 
-matrix.selectedRow = function(){
-  return this.table.querySelector("tr .active");
+matrix.selected = function(){
+  return this.table.querySelector(".active");
 };
 
 matrix.selectedAll = function() {
@@ -73,7 +73,7 @@ matrix.deSelectAll = function() {
 };
 
 matrix.selectedIndex = function(){
-  return [].indexOf.call( this.table.childNodes, this.selectedRow() );
+  return [].indexOf.call( this.table.childNodes, this.selected().parentNode );
 };
 
 matrix.selectFirst = function(){
