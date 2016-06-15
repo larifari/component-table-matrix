@@ -57,11 +57,11 @@ matrix.select = function(el) {
 };
 
 matrix.selected = function(){
-  return this.ul.querySelector(".active");
+  return this.table.querySelector(".active");
 };
 
 matrix.selectedAll = function() {
-  return this.ul.querySelectorAll(".active");
+  return this.table.querySelectorAll(".active");
 };
 
 matrix.deSelectAll = function() {
@@ -73,12 +73,12 @@ matrix.deSelectAll = function() {
 };
 
 matrix.selectIndex = function(index){
-  this.select( this.ul.childNodes[index] );
+  this.select( this.table.childNodes[index] );
   return this;
 };
 
 matrix.selectedIndex = function(){
-  return [].indexOf.call( this.ul.childNodes, this.selected() );
+  return [].indexOf.call( this.table.childNodes, this.selected() );
 };
 
 matrix.selectFirst = function(){
