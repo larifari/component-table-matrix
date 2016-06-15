@@ -56,12 +56,39 @@ matrix.select = function(el) {
   td.classList.add("active");
 };
 
+matrix.selected = function(){
+  return this.ul.querySelector(".active");
+};
+
+matrix.selectedAll = function() {
+  return this.ul.querySelectorAll(".active");
+};
+
 matrix.deSelectAll = function() {
   var actives = this.table.querySelectorAll(".active");
 
   [].forEach.call( actives, function(active){
     active.classList.remove("active");
   });
+};
+
+matrix.selectIndex = function(index){
+  this.select( this.ul.childNodes[index] );
+  return this;
+};
+
+matrix.selectedIndex = function(){
+  return [].indexOf.call( this.ul.childNodes, this.selected() );
+};
+
+matrix.selectFirst = function(){
+  this.select( this.ul.firstChild );
+  return this;
+};
+
+matrix.selectLast = function(){
+  this.select( this.ul.lastChild );
+  return this;
 };
 
 matrix.set = function( rows ){
