@@ -2,81 +2,12 @@ table-matrix {
   display: block;
 }
 
-table-matrix table {
-  border-collapse: separate;
-  border-spacing: 0;
-  text-align: left;
-  width: 100%;
-  cursor: pointer;
+table-matrix #table-container .table-row {
+  display: flex;
+}
+
+table-matrix #table-container .table-row button-color {
+  flex-grow : 1;
+  flex-basis : 0;
   text-align: center;
-  vertical-align: middle;
-}
-
-table-matrix td.active {
-  background:#c8c8c8;
-}
-
-table-matrix td svg {
-  height:44px;
-  width:44px;
-  fill:#555;
-}
-
-table-matrix td[data-icon=pause] svg,
-table-matrix td[data-icon=notfound] svg,
-table-matrix td[data-icon=wait] svg {
-  height:36px;
-  width:36px;
-}
-
-table-matrix td[data-text]:after {
-  position:absolute;
-  padding:0;
-  font-size:1.1rem;
-  margin-left: -44px;
-  height: 44px;
-  line-height:44px;
-  width:44px;
-  text-align: center;
-  content:attr(data-text);
-}
-
-table-matrix td[data-sup]:after {
-  position:absolute;
-  padding:0;
-  margin-left:-0.8rem;
-  font-size:0.8rem;
-  margin-top: -0.2rem;
-  content:attr(data-sup);
-}
-
-table-matrix [data-color="grey"] svg {
-  fill: #c8c8c8;
-}
-table-matrix [data-color="grey"].active svg {
-  fill: #FAFAFA;
-}
-
-table-matrix [data-color="green"] svg {
-  fill: rgb(158, 226, 115);
-}
-
-table-matrix [data-color="yellow"] svg {
-  fill: rgb(229, 230, 127);
-}
-
-table-matrix [data-color="orange"] svg {
-  fill: rgb(235, 200, 140);
-}
-
-table-matrix [data-color="red"] svg {
-  fill: rgb(240, 164, 127);
-}
-
-table-matrix [data-color="darkred"] svg {
-  fill: rgb(240, 138, 136);
-}
-
-table-matrix [data-color="blue"] svg {
-  fill: #4887cc;
 }
