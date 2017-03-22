@@ -4,7 +4,7 @@
 <script src="//static.epha.ch/src/index.shim.js"></script>
 <script src="//static.epha.ch/src/highlight.pack.js"></script>
 
-<script src="https://rawgit.com/epha/component-button-color/master/release/button-color.min.js"></script>
+
 <script src="https://rawgit.com/epha/dom-builder/master/release/builder.min.js"></script>
 
 <script src="../release/table-matrix.js"></script>
@@ -41,19 +41,25 @@
     <section class="gitbook-documentation-section">
         <section class="documentation-explanation">
 
-            <div id="tablematrix-demo" class="documentation-demo"></div>
+           <div id="tablematrix-demo" class="documentation-demo"></div>
           
            <script type="text/javascript">
              
              let tableData = [
                ["u", "?", "x", "c", "c", "b", "x", "?", "u"],
-               ["u", "?", "x", "?", "?", "c", "c", "d", "u"],
-               ["u", "?", "x", "?", "?", "c", "c", "d", "u"],
-               ["u", "?", "x", "?", "?", "c", "c", "d", "u"]
+               ["u", "?", "a", "?", "o", "c", "c", "d", "u"],
+               ["o", "?", "d", "a", "?", "x", "b", "d", "u"],
+               ["u", "?", "x", "?", "b", "c", "c", "d", "u"]
              ];
 
+             function getIndexes(){ 
+               console.log(`column: ${this.dataset.column}`);
+               console.log(`row: ${this.dataset.row}`);
+               console.log("");
+             }
+
              let example = builder`
-                <table-matrix data=${tableData}></table-matrix>
+                <table-matrix data=${tableData} ontouch=${getIndexes}></table-matrix>
              `
               document.querySelector('div#tablematrix-demo').appendChild(example);
            </script>

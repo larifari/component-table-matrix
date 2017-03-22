@@ -188,6 +188,7 @@ var IcOn = function (_HTMLElement) {
   _createClass(IcOn, [{
     key: 'connectedCallback',
     value: function connectedCallback() {
+      console.log('icon connectedcallback');
       this.render("art");
     }
   }, {
@@ -248,9 +249,100 @@ try {
 }
 exports.default = IcOn;
 
-},{"./style.css":5,"domify":6,"isomorphic-fetch":7}],5:[function(require,module,exports){
+},{"./style.css":5,"domify":9,"isomorphic-fetch":12}],5:[function(require,module,exports){
 var css = "ic-on {\n  box-sizing: border-box;\n  display: inline-flex;\n  height: 100%;\n}\nic-on svg {\n  overflow: hidden;\n  text-align: center;\n  vertical-align: middle;\n  fill: #666666;\n}\nic-on.blue svg {\n  fill: #ffffff;\n  background: #28bbee;\n  border: 0px solid #28bbee;\n}\nic-on.grey svg {\n  fill: #9fa0a4;\n  background: #B9B9B9;\n}\n/*normales standard icon innerhalb der matrix*/\nic-on.icon {\n  height: 60px;\n  width: 60px;\n}\nic-on.icon svg {\n  border-radius: 6px;\n}\nic-on.green svg {\n  fill: #1D6622;\n  background: #9EE273;\n}\nic-on.yellow svg {\n  fill: #1D6622;\n  background: #E5E67F;\n}\nic-on.orange svg {\n  fill: #9E6716;\n  background: #EBC88C;\n}\nic-on.red svg {\n  fill: #9E4F2B;\n  background: #F0A47F;\n}\nic-on.dark-red svg {\n  fill: #9E4F2B;\n  background: #F08A88;\n}\n"; (require("browserify-css").createStyle(css, { "href": "../node_modules/component-ic-on/src/style.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":1}],6:[function(require,module,exports){
+(function (global){
+const appendChild = require('./appendChild')
+const appendProps = require('./appendProps')
+const hyperx = require('hyperx')
+
+function createElement(tag, props, children) {
+  var el
+  
+  // Creation Phase
+  // Will call constructor
+  el = document.createElement(tag)
+  
+  appendProps(el,props)
+
+  appendChild(el, children)
+
+  // Enforce render
+  // Otherwise it will only happen in DOM with 
+  // connnectedCallback, but we need to diff
+  if( el.render ) el.render();
+  
+  return el
+}
+
+global.builder = module.exports = hyperx(createElement)
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./appendChild":7,"./appendProps":8,"hyperx":11}],7:[function(require,module,exports){
+module.exports = function(el, childs) {
+  if (!Array.isArray(childs)) return
+  
+  for (var i = 0; i < childs.length; i++) {
+    var node = childs[i]
+    if (Array.isArray(node)) {
+      appendChild(el, node)
+      continue
+    }
+
+    if (typeof node === 'number' ||
+      typeof node === 'boolean' ||
+      node instanceof Date ||
+      node instanceof RegExp) {
+      node = node.toString()
+    }
+
+    if (typeof node === 'string') {
+      if (el.lastChild && el.lastChild.nodeName === '#text') {
+        el.lastChild.nodeValue += node
+        continue
+      }
+      node = document.createTextNode(node)
+    }
+
+    if (node && node.nodeType) {
+      el.appendChild(node)
+    }
+  }
+}
+},{}],8:[function(require,module,exports){
+module.exports = function(el,props) {
+  
+  // Create the properties
+  for (var p in props) {
+    
+    if (props.hasOwnProperty(p)) {
+      var key = p.toLowerCase()
+      var val = props[p]
+      
+      // Normalize className
+      if (key === 'classname') {
+        key = 'class'
+        p = 'class'
+      }
+
+      // Callbacks
+      if("on" == p.substr(0,2)) {
+        el[p] = val 
+      }    
+      // Data Provider
+      else if("data" == key) {
+        el[p] = val 
+      }
+      // All others
+      else {
+        el.setAttribute(p,val);  
+      }
+    }
+    
+  }
+  
+} 
+},{}],9:[function(require,module,exports){
 
 /**
  * Expose `parse`.
@@ -364,7 +456,308 @@ function parse(html, doc) {
   return fragment;
 }
 
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
+module.exports = attributeToProperty
+
+var transform = {
+  'class': 'className',
+  'for': 'htmlFor',
+  'http-equiv': 'httpEquiv'
+}
+
+function attributeToProperty (h) {
+  return function (tagName, attrs, children) {
+    for (var attr in attrs) {
+      if (attr in transform) {
+        attrs[transform[attr]] = attrs[attr]
+        delete attrs[attr]
+      }
+    }
+    return h(tagName, attrs, children)
+  }
+}
+
+},{}],11:[function(require,module,exports){
+var attrToProp = require('hyperscript-attribute-to-property')
+
+var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
+var ATTR_KEY = 5, ATTR_KEY_W = 6
+var ATTR_VALUE_W = 7, ATTR_VALUE = 8
+var ATTR_VALUE_SQ = 9, ATTR_VALUE_DQ = 10
+var ATTR_EQ = 11, ATTR_BREAK = 12
+var COMMENT = 13
+
+module.exports = function (h, opts) {
+  if (!opts) opts = {}
+  var concat = opts.concat || function (a, b) {
+    return String(a) + String(b)
+  }
+  if (opts.attrToProp !== false) {
+    h = attrToProp(h)
+  }
+
+  return function (strings) {
+    var state = TEXT, reg = ''
+    var arglen = arguments.length
+    var parts = []
+
+    for (var i = 0; i < strings.length; i++) {
+      if (i < arglen - 1) {
+        var arg = arguments[i+1]
+        var p = parse(strings[i])
+        var xstate = state
+        if (xstate === ATTR_VALUE_DQ) xstate = ATTR_VALUE
+        if (xstate === ATTR_VALUE_SQ) xstate = ATTR_VALUE
+        if (xstate === ATTR_VALUE_W) xstate = ATTR_VALUE
+        if (xstate === ATTR) xstate = ATTR_KEY
+        p.push([ VAR, xstate, arg ])
+        parts.push.apply(parts, p)
+      } else parts.push.apply(parts, parse(strings[i]))
+    }
+
+    var tree = [null,{},[]]
+    var stack = [[tree,-1]]
+    for (var i = 0; i < parts.length; i++) {
+      var cur = stack[stack.length-1][0]
+      var p = parts[i], s = p[0]
+      if (s === OPEN && /^\//.test(p[1])) {
+        var ix = stack[stack.length-1][1]
+        if (stack.length > 1) {
+          stack.pop()
+          stack[stack.length-1][0][2][ix] = h(
+            cur[0], cur[1], cur[2].length ? cur[2] : undefined
+          )
+        }
+      } else if (s === OPEN) {
+        var c = [p[1],{},[]]
+        cur[2].push(c)
+        stack.push([c,cur[2].length-1])
+      } else if (s === ATTR_KEY || (s === VAR && p[1] === ATTR_KEY)) {
+        var key = ''
+        var copyKey
+        for (; i < parts.length; i++) {
+          if (parts[i][0] === ATTR_KEY) {
+            key = concat(key, parts[i][1])
+          } else if (parts[i][0] === VAR && parts[i][1] === ATTR_KEY) {
+            if (typeof parts[i][2] === 'object' && !key) {
+              for (copyKey in parts[i][2]) {
+                if (parts[i][2].hasOwnProperty(copyKey) && !cur[1][copyKey]) {
+                  cur[1][copyKey] = parts[i][2][copyKey]
+                }
+              }
+            } else {
+              key = concat(key, parts[i][2])
+            }
+          } else break
+        }
+        if (parts[i][0] === ATTR_EQ) i++
+        var j = i
+        for (; i < parts.length; i++) {
+          if (parts[i][0] === ATTR_VALUE || parts[i][0] === ATTR_KEY) {
+            if (!cur[1][key]) cur[1][key] = strfn(parts[i][1])
+            else cur[1][key] = concat(cur[1][key], parts[i][1])
+          } else if (parts[i][0] === VAR
+          && (parts[i][1] === ATTR_VALUE || parts[i][1] === ATTR_KEY)) {
+            if (!cur[1][key]) cur[1][key] = strfn(parts[i][2])
+            else cur[1][key] = concat(cur[1][key], parts[i][2])
+          } else {
+            if (key.length && !cur[1][key] && i === j
+            && (parts[i][0] === CLOSE || parts[i][0] === ATTR_BREAK)) {
+              // https://html.spec.whatwg.org/multipage/infrastructure.html#boolean-attributes
+              // empty string is falsy, not well behaved value in browser
+              cur[1][key] = key.toLowerCase()
+            }
+            break
+          }
+        }
+      } else if (s === ATTR_KEY) {
+        cur[1][p[1]] = true
+      } else if (s === VAR && p[1] === ATTR_KEY) {
+        cur[1][p[2]] = true
+      } else if (s === CLOSE) {
+        if (selfClosing(cur[0]) && stack.length) {
+          var ix = stack[stack.length-1][1]
+          stack.pop()
+          stack[stack.length-1][0][2][ix] = h(
+            cur[0], cur[1], cur[2].length ? cur[2] : undefined
+          )
+        }
+      } else if (s === VAR && p[1] === TEXT) {
+        if (p[2] === undefined || p[2] === null) p[2] = ''
+        else if (!p[2]) p[2] = concat('', p[2])
+        if (Array.isArray(p[2][0])) {
+          cur[2].push.apply(cur[2], p[2])
+        } else {
+          cur[2].push(p[2])
+        }
+      } else if (s === TEXT) {
+        cur[2].push(p[1])
+      } else if (s === ATTR_EQ || s === ATTR_BREAK) {
+        // no-op
+      } else {
+        throw new Error('unhandled: ' + s)
+      }
+    }
+
+    if (tree[2].length > 1 && /^\s*$/.test(tree[2][0])) {
+      tree[2].shift()
+    }
+
+    if (tree[2].length > 2
+    || (tree[2].length === 2 && /\S/.test(tree[2][1]))) {
+      throw new Error(
+        'multiple root elements must be wrapped in an enclosing tag'
+      )
+    }
+    if (Array.isArray(tree[2][0]) && typeof tree[2][0][0] === 'string'
+    && Array.isArray(tree[2][0][2])) {
+      tree[2][0] = h(tree[2][0][0], tree[2][0][1], tree[2][0][2])
+    }
+    return tree[2][0]
+
+    function parse (str) {
+      var res = []
+      if (state === ATTR_VALUE_W) state = ATTR
+      for (var i = 0; i < str.length; i++) {
+        var c = str.charAt(i)
+        if (state === TEXT && c === '<') {
+          if (reg.length) res.push([TEXT, reg])
+          reg = ''
+          state = OPEN
+        } else if (c === '>' && !quot(state) && state !== COMMENT) {
+          if (state === OPEN) {
+            res.push([OPEN,reg])
+          } else if (state === ATTR_KEY) {
+            res.push([ATTR_KEY,reg])
+          } else if (state === ATTR_VALUE && reg.length) {
+            res.push([ATTR_VALUE,reg])
+          }
+          res.push([CLOSE])
+          reg = ''
+          state = TEXT
+        } else if (state === COMMENT && /-$/.test(reg) && c === '-') {
+          if (opts.comments) {
+            res.push([ATTR_VALUE,reg.substr(0, reg.length - 1)],[CLOSE])
+          }
+          reg = ''
+          state = TEXT
+        } else if (state === OPEN && /^!--$/.test(reg)) {
+          if (opts.comments) {
+            res.push([OPEN, reg],[ATTR_KEY,'comment'],[ATTR_EQ])
+          }
+          reg = c
+          state = COMMENT
+        } else if (state === TEXT || state === COMMENT) {
+          reg += c
+        } else if (state === OPEN && /\s/.test(c)) {
+          res.push([OPEN, reg])
+          reg = ''
+          state = ATTR
+        } else if (state === OPEN) {
+          reg += c
+        } else if (state === ATTR && /[^\s"'=/]/.test(c)) {
+          state = ATTR_KEY
+          reg = c
+        } else if (state === ATTR && /\s/.test(c)) {
+          if (reg.length) res.push([ATTR_KEY,reg])
+          res.push([ATTR_BREAK])
+        } else if (state === ATTR_KEY && /\s/.test(c)) {
+          res.push([ATTR_KEY,reg])
+          reg = ''
+          state = ATTR_KEY_W
+        } else if (state === ATTR_KEY && c === '=') {
+          res.push([ATTR_KEY,reg],[ATTR_EQ])
+          reg = ''
+          state = ATTR_VALUE_W
+        } else if (state === ATTR_KEY) {
+          reg += c
+        } else if ((state === ATTR_KEY_W || state === ATTR) && c === '=') {
+          res.push([ATTR_EQ])
+          state = ATTR_VALUE_W
+        } else if ((state === ATTR_KEY_W || state === ATTR) && !/\s/.test(c)) {
+          res.push([ATTR_BREAK])
+          if (/[\w-]/.test(c)) {
+            reg += c
+            state = ATTR_KEY
+          } else state = ATTR
+        } else if (state === ATTR_VALUE_W && c === '"') {
+          state = ATTR_VALUE_DQ
+        } else if (state === ATTR_VALUE_W && c === "'") {
+          state = ATTR_VALUE_SQ
+        } else if (state === ATTR_VALUE_DQ && c === '"') {
+          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
+          reg = ''
+          state = ATTR
+        } else if (state === ATTR_VALUE_SQ && c === "'") {
+          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
+          reg = ''
+          state = ATTR
+        } else if (state === ATTR_VALUE_W && !/\s/.test(c)) {
+          state = ATTR_VALUE
+          i--
+        } else if (state === ATTR_VALUE && /\s/.test(c)) {
+          res.push([ATTR_VALUE,reg],[ATTR_BREAK])
+          reg = ''
+          state = ATTR
+        } else if (state === ATTR_VALUE || state === ATTR_VALUE_SQ
+        || state === ATTR_VALUE_DQ) {
+          reg += c
+        }
+      }
+      if (state === TEXT && reg.length) {
+        res.push([TEXT,reg])
+        reg = ''
+      } else if (state === ATTR_VALUE && reg.length) {
+        res.push([ATTR_VALUE,reg])
+        reg = ''
+      } else if (state === ATTR_VALUE_DQ && reg.length) {
+        res.push([ATTR_VALUE,reg])
+        reg = ''
+      } else if (state === ATTR_VALUE_SQ && reg.length) {
+        res.push([ATTR_VALUE,reg])
+        reg = ''
+      } else if (state === ATTR_KEY) {
+        res.push([ATTR_KEY,reg])
+        reg = ''
+      }
+      return res
+    }
+  }
+
+  function strfn (x) {
+    if (typeof x === 'function') return x
+    else if (typeof x === 'string') return x
+    else if (x && typeof x === 'object') return x
+    else return concat('', x)
+  }
+}
+
+function quot (state) {
+  return state === ATTR_VALUE_SQ || state === ATTR_VALUE_DQ
+}
+
+var hasOwn = Object.prototype.hasOwnProperty
+function has (obj, key) { return hasOwn.call(obj, key) }
+
+var closeRE = RegExp('^(' + [
+  'area', 'base', 'basefont', 'bgsound', 'br', 'col', 'command', 'embed',
+  'frame', 'hr', 'img', 'input', 'isindex', 'keygen', 'link', 'meta', 'param',
+  'source', 'track', 'wbr', '!--',
+  // SVG TAGS
+  'animate', 'animateTransform', 'circle', 'cursor', 'desc', 'ellipse',
+  'feBlend', 'feColorMatrix', 'feComposite',
+  'feConvolveMatrix', 'feDiffuseLighting', 'feDisplacementMap',
+  'feDistantLight', 'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR',
+  'feGaussianBlur', 'feImage', 'feMergeNode', 'feMorphology',
+  'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight', 'feTile',
+  'feTurbulence', 'font-face-format', 'font-face-name', 'font-face-uri',
+  'glyph', 'glyphRef', 'hkern', 'image', 'line', 'missing-glyph', 'mpath',
+  'path', 'polygon', 'polyline', 'rect', 'set', 'stop', 'tref', 'use', 'view',
+  'vkern'
+].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
+function selfClosing (tag) { return closeRE.test(tag) }
+
+},{"hyperscript-attribute-to-property":10}],12:[function(require,module,exports){
 // the whatwg-fetch polyfill installs the fetch() function
 // on the global object (window or self)
 //
@@ -372,7 +765,7 @@ function parse(html, doc) {
 require('whatwg-fetch');
 module.exports = self.fetch.bind(self);
 
-},{"whatwg-fetch":8}],8:[function(require,module,exports){
+},{"whatwg-fetch":13}],13:[function(require,module,exports){
 (function(self) {
   'use strict';
 
@@ -835,7 +1228,7 @@ module.exports = self.fetch.bind(self);
   self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
 
-},{}],9:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -844,11 +1237,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _templateObject = _taggedTemplateLiteral(["\n        <section id=\"table-container\">\n        </section>\n    "], ["\n        <section id=\"table-container\">\n        </section>\n    "]),
+    _templateObject2 = _taggedTemplateLiteral(["\n          <section class=\"table-row\">\n          </section>\n        "], ["\n          <section class=\"table-row\">\n          </section>\n        "]),
+    _templateObject3 = _taggedTemplateLiteral(["\n            <button-color data-row=", " data-column=", " class=", " ontouch=", "></button-color>\n          "], ["\n            <button-color data-row=", " data-column=", " class=", " ontouch=", "></button-color>\n          "]);
+
 require("./style.css");
 
 require("component-button-color");
 
 require("component-ic-on");
+
+require("dom-builder");
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -923,24 +1324,29 @@ var tableMatrix = function (_HTMLElement) {
 
       if (this.sync) return this.innerHTML;
       if (!this.sync) this.sync = true;
-      var columnIndex = 0;
-      var rowIndex = 0;
-      var content = "\n        <section id=\"table-container\">\n          " + this.data.map(function (item) {
-        var html = void 0;
-
-        html = "\n                <section class=\"table-row\">\n                  " + item.map(function (indication) {
-          var button = void 0;
-
-          button = "\n                        <button-color class=" + _this2.getClass(indication) + ">\n                          " + _this2.getContent(indication) + "\n                        </button-color>\n                      ";
-          columnIndex++;
-          return button;
-        }).join('') + "\n                </section>\n\n              ";
-        rowIndex++;
-        return html;
-      }).join('') + "\n        </ssection>\n    ";
+      var columnIndex = 0,
+          rowIndex = 0,
+          content = builder(_templateObject);
 
       new Promise(function (resolve) {
-        _this2.innerHTML = content;
+        var rowIndex = 0,
+            columnIndex = 0;
+
+        _this2.data.forEach(function (row) {
+          row = builder(_templateObject2);
+
+          _this2.data[rowIndex].forEach(function (indication) {
+            var button = builder(_templateObject3, rowIndex, columnIndex, _this2.getClass(indication), _this2.ontouch);
+
+            button.innerHTML = _this2.getContent(indication);
+            columnIndex++;
+            if (columnIndex == 9) columnIndex = 0;
+            row.appendChild(button);
+          });
+          content.appendChild(row);
+          rowIndex++;
+        });
+        _this2.appendChild(content);
         resolve('Success');
       }).then(function () {});
     }
@@ -951,12 +1357,76 @@ var tableMatrix = function (_HTMLElement) {
       this._data = val;
     },
     get: function get() {
+      console.log('set data matrix');
       return this._data;
+    }
+  }, {
+    key: "ontouch",
+    set: function set(callback) {
+      this._callback = callback;
+    },
+    get: function get() {
+      return this._callback;
     }
   }]);
 
   return tableMatrix;
 }(HTMLElement);
+
+/*
+render(){
+  if( this.sync ) return this.innerHTML;
+  if(!this.sync ) this.sync = true;
+  console.log('render')
+  let columnIndex = 0;
+  let rowIndex = 0;
+  let content  = `
+      <section id="table-container">
+
+        ${
+          this.data.map( (item) => {
+            let html;
+            
+            html = `
+              <section class="table-row">
+                ${
+                  item.map((indication) => {
+                    let button;
+                    //console.log(this.ontouch)
+                    button = `
+                      <button-color data-row=${rowIndex} data-column=${columnIndex} class=${this.getClass(indication)} ontouch=${this.ontouch}>
+                        ${this.getContent(indication)}
+                      </button-color>
+                    `
+                    columnIndex++;
+                    if(columnIndex == 9) columnIndex = 0;
+                    //console.log(button)
+                    return button;
+                    
+                  })
+                  .join('')
+                }
+              </section>
+
+            `
+            rowIndex++;
+            //console.log(html)
+            return html;
+          })
+          .join('')
+        }
+      </section>
+  `
+  
+  new Promise((resolve) => {
+    this.innerHTML = content;
+    resolve('Success');
+  })
+  .then(() => {
+
+  })
+}
+*/
 
 try {
   customElements.define('table-matrix', tableMatrix);
@@ -966,6 +1436,6 @@ try {
 
 exports.default = tableMatrix;
 
-},{"./style.css":10,"component-button-color":2,"component-ic-on":4}],10:[function(require,module,exports){
+},{"./style.css":15,"component-button-color":2,"component-ic-on":4,"dom-builder":6}],15:[function(require,module,exports){
 var css = "table-matrix {\n  display: block;\n}\ntable-matrix #table-container .table-row {\n  display: flex;\n}\ntable-matrix #table-container .table-row button-color {\n  flex-grow: 1;\n  flex-basis: 0;\n  text-align: center;\n}\n"; (require("browserify-css").createStyle(css, { "href": "style.css" }, { "insertAt": "bottom" })); module.exports = css;
-},{"browserify-css":1}]},{},[9]);
+},{"browserify-css":1}]},{},[14]);

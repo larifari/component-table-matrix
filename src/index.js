@@ -1,8 +1,7 @@
 import "./style.css";
 import "component-button-color";
 import "component-ic-on";
-
-
+import "dom-builder";
 
 class tableMatrix extends HTMLElement{
 
@@ -12,7 +11,16 @@ class tableMatrix extends HTMLElement{
   }
 
   get data(){
+    console.log('set data matrix')
     return this._data;
+  }
+
+  set ontouch(callback) {
+    this._callback = callback;
+  }
+
+  get ontouch(){
+    return this._callback;
   }
 
   connectedCallback() {
@@ -59,44 +67,37 @@ class tableMatrix extends HTMLElement{
   render(){
     if( this.sync ) return this.innerHTML;
     if(!this.sync ) this.sync = true;
-    let columnIndex = 0;
-    let rowIndex = 0;
-    let content  = `
+    let columnIndex = 0,
+        rowIndex = 0,
+        content  = builder`
         <section id="table-container">
-          ${
-            this.data.map( (item) => {
-              let html;
-              
-              html = `
-                <section class="table-row">
-                  ${
-                    item.map((indication) => {
-                      let button;
-
-                      button = `
-                        <button-color class=${this.getClass(indication)}>
-                          ${this.getContent(indication)}
-                        </button-color>
-                      `
-                      columnIndex++;
-                      return button;
-                      
-                    })
-                    .join('')
-                  }
-                </section>
-
-              `
-              rowIndex++;
-              return html;
-            })
-            .join('')
-          }
-        </ssection>
-    `
+        </section>
+    `;
     
     new Promise((resolve) => {
-      this.innerHTML = content;
+      let rowIndex=0,
+          columnIndex = 0;
+
+      this.data.forEach((row) => {
+        row = builder`
+          <section class="table-row">
+          </section>
+        `
+
+        this.data[rowIndex].forEach((indication) => {
+          let button = builder`
+            <button-color data-row=${rowIndex} data-column=${columnIndex} class=${this.getClass(indication)} ontouch=${this.ontouch}></button-color>
+          `
+
+          button.innerHTML = this.getContent(indication)
+          columnIndex++;
+          if(columnIndex == 9) columnIndex = 0;
+          row.appendChild(button);
+        })
+        content.appendChild(row);
+        rowIndex++;
+      })
+      this.appendChild(content)
       resolve('Success');
     })
     .then(() => {
@@ -104,6 +105,61 @@ class tableMatrix extends HTMLElement{
     })
   }
 }
+
+/*
+render(){
+  if( this.sync ) return this.innerHTML;
+  if(!this.sync ) this.sync = true;
+  console.log('render')
+  let columnIndex = 0;
+  let rowIndex = 0;
+  let content  = `
+      <section id="table-container">
+
+        ${
+          this.data.map( (item) => {
+            let html;
+            
+            html = `
+              <section class="table-row">
+                ${
+                  item.map((indication) => {
+                    let button;
+                    //console.log(this.ontouch)
+                    button = `
+                      <button-color data-row=${rowIndex} data-column=${columnIndex} class=${this.getClass(indication)} ontouch=${this.ontouch}>
+                        ${this.getContent(indication)}
+                      </button-color>
+                    `
+                    columnIndex++;
+                    if(columnIndex == 9) columnIndex = 0;
+                    //console.log(button)
+                    return button;
+                    
+                  })
+                  .join('')
+                }
+              </section>
+
+            `
+            rowIndex++;
+            //console.log(html)
+            return html;
+          })
+          .join('')
+        }
+      </section>
+  `
+  
+  new Promise((resolve) => {
+    this.innerHTML = content;
+    resolve('Success');
+  })
+  .then(() => {
+
+  })
+}
+*/
 
 try {
   customElements.define('table-matrix', tableMatrix);
