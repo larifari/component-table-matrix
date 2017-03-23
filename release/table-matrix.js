@@ -109,7 +109,7 @@ var buttonColor = function (_HTMLElement) {
     key: "onclick",
     value: function onclick(e) {
       if (e.target.tagName == "BUTTON-COLOR") {
-        this.callback();
+        this.callback(this.data);
       }
     }
   }, {
@@ -188,7 +188,6 @@ var IcOn = function (_HTMLElement) {
   _createClass(IcOn, [{
     key: 'connectedCallback',
     value: function connectedCallback() {
-      console.log('icon connectedcallback');
       this.render("art");
     }
   }, {
@@ -1239,7 +1238,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _templateObject = _taggedTemplateLiteral(["\n        <section id=\"table-container\">\n        </section>\n    "], ["\n        <section id=\"table-container\">\n        </section>\n    "]),
     _templateObject2 = _taggedTemplateLiteral(["\n          <section class=\"table-row\">\n          </section>\n        "], ["\n          <section class=\"table-row\">\n          </section>\n        "]),
-    _templateObject3 = _taggedTemplateLiteral(["\n            <button-color data-row=", " data-column=", " class=", " ontouch=", "></button-color>\n          "], ["\n            <button-color data-row=", " data-column=", " class=", " ontouch=", "></button-color>\n          "]);
+    _templateObject3 = _taggedTemplateLiteral(["\n            <button-color data=", " data-row=", " data-column=", " class=", " ontouch=", "></button-color>\n          "], ["\n            <button-color data=", " data-row=", " data-column=", " class=", " ontouch=", "></button-color>\n          "]);
 
 require("./style.css");
 
@@ -1336,7 +1335,8 @@ var tableMatrix = function (_HTMLElement) {
           row = builder(_templateObject2);
 
           _this2.data[rowIndex].forEach(function (indication) {
-            var button = builder(_templateObject3, rowIndex, columnIndex, _this2.getClass(indication), _this2.ontouch);
+            var data = { "row": rowIndex, "column": columnIndex };
+            var button = builder(_templateObject3, data, rowIndex, columnIndex, _this2.getClass(indication), _this2.ontouch);
 
             button.innerHTML = _this2.getContent(indication);
             columnIndex++;
@@ -1357,7 +1357,6 @@ var tableMatrix = function (_HTMLElement) {
       this._data = val;
     },
     get: function get() {
-      console.log('set data matrix');
       return this._data;
     }
   }, {

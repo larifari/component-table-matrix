@@ -11,7 +11,6 @@ class tableMatrix extends HTMLElement{
   }
 
   get data(){
-    console.log('set data matrix')
     return this._data;
   }
 
@@ -85,8 +84,9 @@ class tableMatrix extends HTMLElement{
         `
 
         this.data[rowIndex].forEach((indication) => {
+          let data = {"row" : rowIndex, "column" : columnIndex}
           let button = builder`
-            <button-color data-row=${rowIndex} data-column=${columnIndex} class=${this.getClass(indication)} ontouch=${this.ontouch}></button-color>
+            <button-color data=${data} data-row=${rowIndex} data-column=${columnIndex} class=${this.getClass(indication)} ontouch=${this.ontouch}></button-color>
           `
 
           button.innerHTML = this.getContent(indication)
