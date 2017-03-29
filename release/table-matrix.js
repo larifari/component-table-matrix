@@ -1436,5 +1436,5 @@ try {
 exports.default = tableMatrix;
 
 },{"./style.css":15,"component-button-color":2,"component-ic-on":4,"dom-builder":6}],15:[function(require,module,exports){
-var css = "table-matrix {\n  display: block;\n}\ntable-matrix #table-container .table-row {\n  display: flex;\n}\ntable-matrix #table-container .table-row button-color {\n  flex-grow: 1;\n  flex-basis: 0;\n  text-align: center;\n}\ntable-matrix ic-on[art=info] svg {\n  fill: #4887cc;\n}\n"; (require("browserify-css").createStyle(css, { "href": "style.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = "table-matrix {\n  display: block;\n}\ntable-matrix #table-container .table-row {\n  display: flex;\n}\ntable-matrix #table-container .table-row button-color {\n  flex-grow: 1;\n  flex-basis: 0;\n  text-align: center;\n}\ntable-matrix ic-on {\n  width: 100%;\n}\ntable-matrix ic-on svg {\n  width: 100%;\n}\ntable-matrix ic-on[art=info] svg {\n  fill: #4887cc;\n}\n"; (require("browserify-css").createStyle(css, { "href": "style.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":1}]},{},[14]);

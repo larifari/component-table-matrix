@@ -12,6 +12,14 @@ table-matrix #table-container .table-row button-color {
   text-align: center;
 }
 
+table-matrix ic-on {
+	width : 100%;
+}
+
+table-matrix ic-on svg {
+	width : 100%;
+}
+
 table-matrix ic-on[art=info] svg {
   fill : #4887cc;
 }
